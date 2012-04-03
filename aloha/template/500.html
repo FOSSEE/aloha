@@ -1,15 +1,18 @@
-{% extends "base.html" %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <title>Page unavailable</title>
+</head>
+<body>
+    <h1>Page unavailable</h1>
 
+    <p>Sorry, but the requested page is unavailable due to a
+    server hiccup.</p>
 
-{% block title %}Internal Server Error...{% endblock title %}
+    <p>Our engineers have been notified, so check back later.</p>
+    <hr />
+    <p>Try to <a href="/allotter">Login</a> again.</p>
 
-{% block content %}
-<h2> Welcome to the JAM 2012 Admission website</h2>
-<h2>Internal Server Error...</h2>
-<h3>Looks like something has gone wrong. An email has been sent to the administrator</h3>
-<hr />
-
-<h3>Please follow this <a href="/allotter">link</a> to login</h3>
-
-{% endblock content %}
-
+</body>
+</html>
