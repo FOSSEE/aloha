@@ -21,14 +21,13 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_JUSTIFY
-
+all
 import time
 
 def user_login(request):
     """
         Verify the user credentials and log the user in.
     """
-
     user = request.user
     if user.is_authenticated():
         status = user.get_profile().application.submitted #Getting the submission status
@@ -121,8 +120,11 @@ def apply(request):
     if not(user.is_authenticated()):
         return redirect('/allotter/login/')
     
-    context = get_details(user) 
-              
+    sec_email = user.get_profile().secondary_email
+    if not sec_email: #Not Entered Secondary email
+        return redirect('/allotter/details/')
+        
+    context = get_details(user)       
     return render(request, 'allotter/apply.html', context)                         
 
 
@@ -188,7 +190,7 @@ def complete_allotment(request):
     user = get_object_or_404(User, username=reg_no)
     sec_email = user.get_profile().secondary_email
     if not sec_email: #Not Entered Secondary email
-        redirect('/allotter/details/')
+        return redirect('/allotter/details/')
     options_chosen = get_chosen_options(user)
     context = {'username': reg_no, 'email': sec_email,  
                 'options_chosen': options_chosen}
