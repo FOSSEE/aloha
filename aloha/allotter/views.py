@@ -187,6 +187,8 @@ def complete_allotment(request):
     reg_no = request.user.username
     user = get_object_or_404(User, username=reg_no)
     sec_email = user.get_profile().secondary_email
+    if not sec_email: #Not Entered Secondary email
+        redirect('/allotter/details/')
     options_chosen = get_chosen_options(user)
     context = {'username': reg_no, 'email': sec_email,  
                 'options_chosen': options_chosen}
@@ -202,7 +204,7 @@ def complete_allotment(request):
             counter += 1 
                             
     content += "\n \n \nPlease do not delete this email and keep it for reference purposes. \n \n \n \n Regards, \n JAM Office, IIT Bombay"
-    send_mail(subject, content, from_email, [sec_email])
+    send_mail(subject, content, from_email, [sec_email], fail_silently=True)
     admin_content = content
     admin_content +="\n\n\n#%s:" % (reg_no)
     counter = 1
@@ -211,7 +213,7 @@ def complete_allotment(request):
             counter += 1
     admin_content +="#"
     admin_content += time.ctime()                      
-    mail_admins(subject, admin_content)                   
+    mail_admins(subject, admin_content, fail_silently=True)                   
     return render(request, 'allotter/complete.html', context)
     
     
