@@ -161,6 +161,7 @@ class UserDetailsForm(forms.Form):
         email = self.cleaned_data['email']
         phone_number = self.cleaned_data['phone_number']
         category = self.cleaned_data['category']
+        pd_status = self.cleaned_data['pd']
            
         if email and phone_number:
             user_profile.secondary_email = email
@@ -170,6 +171,7 @@ class UserDetailsForm(forms.Form):
         
         user_application = user_profile.application
         user_application.cgy = category
+        user_application.pd_status = pd_status
         user_application.save()    
 
         user_profile.save()
