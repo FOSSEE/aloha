@@ -1,6 +1,7 @@
 from django import forms
 from allotter.models import Profile
 from django.forms.extras.widgets import SelectDateWidget
+from django.forms.widgets import RadioSelect
 
 from django.utils.encoding import *
 
@@ -13,6 +14,9 @@ from string import digits, uppercase
 
 BIRTH_YEAR_CHOICES = tuple(range(1960, 1994, 1))
 DD_YEAR_CHOICES = (2012,)
+CATEGORY_CHOICES = [('GEN','General'), ('OBC-NM', 'OBC-Non-Minority'), ('OBC-M', 'OBC-Minority'), 
+                    ('SC', 'SC'), ('ST', 'ST')]
+PD_CHOICES = [('Y', 'Yes'), ('N', 'No')]                                        
 
 
 class UserLoginForm(forms.Form):
@@ -131,9 +135,18 @@ class UserDetailsForm(forms.Form):
 
     email = forms.EmailField(label="Email Address", widget=forms.TextInput(attrs={"placeholder":"john@example.com",}),
                 help_text="Enter a valid email id where you will able to receive correspondence from JAM 2012.")
-    phone_number = forms.CharField(label="Phone number", max_length=15, widget=forms.TextInput(attrs={"placeholder":"9876543210",}), help_text="Phone number with code. For example 02225722545 (with neither spaces nor dashes)")
     
-    cat_check = forms.BooleanField(required=False, initial=False, label="Check this if you belong to SEBC-M Category")
+    phone_number = forms.CharField(label="Phone number", max_length=15, 
+                widget=forms.TextInput(attrs={"placeholder":"9876543210",}), 
+                help_text="Phone number with code. For example 02225722545 (with neither spaces nor dashes)")
+    
+    category = forms.ChoiceField(widget=forms.Select(attrs={'class':'selector'}), 
+                label="Category", choices=CATEGORY_CHOICES,
+                help_text="Category under which you would be considered for admission.")
+                
+    pd = forms.ChoiceField(label="Physical Disability", widget=RadioSelect, choices=PD_CHOICES)            
+    
+    
 
     def clean_phone_number(self):
         pno = self.cleaned_data['phone_number']
@@ -147,15 +160,16 @@ class UserDetailsForm(forms.Form):
         
         email = self.cleaned_data['email']
         phone_number = self.cleaned_data['phone_number']
-        cat_check = self.cleaned_data['cat_check']
+        category = self.cleaned_data['category']
            
         if email and phone_number:
             user_profile.secondary_email = email
-            user_profile.phone_number = phone_number
+            user_profile.phone_number = phone_number            
         else:
             raise forms.ValidationError("Make sure that you have entered all the details.")            
-        if cat_check:    
-            user_profile.cat_status = True
-            
+        
+        user_application = user_profile.application
+        user_application.cgy = category
+        user_application.save()    
 
         user_profile.save()
