@@ -185,3 +185,5 @@ APPLICATION_PDF = "application.pdf"
 
 AUTO_LOGOUT_DELAY = 15
 
+DEFAULT_PASSWORD = "JamPassword"
+
