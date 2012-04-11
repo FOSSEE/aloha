@@ -102,7 +102,9 @@ class Application(models.Model):
     cent = models.IntegerField(max_length=10, verbose_name="Center Code")
 	
     cgy = models.CharField(max_length=10, verbose_name="Category")
-
+    
+    pd_status = models.CharField(max_length=1, verbose_name="Physical Disability", 
+                    help_text="Y for Yes, N for No", blank=True, default="N")
     
     submitted = models.BooleanField(verbose_name="Submission Status", default=False)
 
@@ -125,9 +127,7 @@ class Profile(models.Model):
         help_text=u"Phone number read from user after authentication")
         
     dd_no = models.CharField(max_length=15, verbose_name="Demand Draft Number", blank=True, null=True)
-    
-    cat_status = models.BooleanField(help_text="Whether belongs to Category SBOBC", default=False)    
-    
+        
     #Application for the Profile    
     application = models.ForeignKey(Application)
 	
