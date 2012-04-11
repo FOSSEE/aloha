@@ -1,6 +1,7 @@
 from django import forms
 from allotter.models import Profile
 from django.forms.extras.widgets import SelectDateWidget
+from django.forms.widgets import RadioSelect
 
 from django.utils.encoding import *
 
@@ -10,9 +11,13 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
 from string import digits, uppercase
+import settings
 
 BIRTH_YEAR_CHOICES = tuple(range(1960, 1994, 1))
 DD_YEAR_CHOICES = (2012,)
+CATEGORY_CHOICES = [('GEN','General'), ('OBC-NCL', 'OBC-NCL'), ('OBC-NCL-M', 'OBC-NCL(Minorities)'), 
+                    ('SC', 'SC'), ('ST', 'ST')]
+PD_CHOICES = [('Y', 'Yes'), ('N', 'No')]                                        
 
 
 class UserLoginForm(forms.Form):
@@ -22,8 +27,8 @@ class UserLoginForm(forms.Form):
              help_text="As on your Examination Admit Card")
  
     ##Application number as password    
-    password = forms.CharField(label = "Application Number", 
-             max_length=10, help_text="As on your Examination Admit Card")
+    #password = forms.CharField(label = "Application Number", 
+    #         max_length=10, help_text="As on your Examination Admit Card")
     
     dob = forms.DateField(label="Date of Birth", 
             widget=SelectDateWidget(years=BIRTH_YEAR_CHOICES, attrs={"class":"span1"}),
@@ -60,22 +65,23 @@ class UserLoginForm(forms.Form):
         except User.DoesNotExist:
             raise forms.ValidationError("Entered Registration Number haven't appeared for JAM Exam.")
 
-    def clean_password(self):
-    
-        pwd = self.cleaned_data['password']
-        
+#    def clean_password(self):
+#    
+#        pwd = self.cleaned_data['password']
+#        
         ##Verifying the length of application number and whether it contains
         ##only digits.
 
-        if str(pwd).strip(digits) and len(pwd) != 5:
-            msg = "Not a valid Application Number"
-            raise forms.ValidationError(msg)    
-        
-        return pwd
+#        if str(pwd).strip(digits) and len(pwd) != 5:
+#            msg = "Not a valid Application Number"
+#            raise forms.ValidationError(msg)    
+#        
+#        return pwd
         
     def clean(self):
         super(UserLoginForm, self).clean()
-        u_name, pwd = self.cleaned_data.get('username'), self.cleaned_data.get('password')
+        u_name = self.cleaned_data.get('username')
+        pwd = settings.DEFAULT_PASSWORD
         dob = self.cleaned_data["dob"]
         dd_no = self.cleaned_data.get("dd_no")
         dd_date = self.cleaned_data.get("dd_date")
@@ -131,9 +137,18 @@ class UserDetailsForm(forms.Form):
 
     email = forms.EmailField(label="Email Address", widget=forms.TextInput(attrs={"placeholder":"john@example.com",}),
                 help_text="Enter a valid email id where you will able to receive correspondence from JAM 2012.")
-    phone_number = forms.CharField(label="Phone number", max_length=15, widget=forms.TextInput(attrs={"placeholder":"9876543210",}), help_text="Phone number with code. For example 02225722545 (with neither spaces nor dashes)")
     
-    cat_check = forms.BooleanField(required=False, initial=False, label="Check this if you belong to SEBC-M Category")
+    phone_number = forms.CharField(label="Phone number", max_length=15, 
+                widget=forms.TextInput(attrs={"placeholder":"9876543210",}), 
+                help_text="Phone number with code. For example 02225722545 (with neither spaces nor dashes)")
+    
+    category = forms.ChoiceField(widget=forms.Select(attrs={'class':'selector'}), 
+                label="Category", choices=CATEGORY_CHOICES,
+                help_text="The category you select is normally the one you have specified at the time of applying for the JAM 2012 examination. The category verification is only after submitting the relevantdocuments and scrutiny by the JAM 2012 committee and the institute for which you are applying.  Candidates applying under the new category OBC-M should have specified OBC at the time of applying for the JAM 2012 and would now have to supply the additional relevant documents for this category.")
+                
+    pd = forms.ChoiceField(label="Physical Disability", widget=RadioSelect, choices=PD_CHOICES)            
+    
+    
 
     def clean_phone_number(self):
         pno = self.cleaned_data['phone_number']
@@ -147,15 +162,18 @@ class UserDetailsForm(forms.Form):
         
         email = self.cleaned_data['email']
         phone_number = self.cleaned_data['phone_number']
-        cat_check = self.cleaned_data['cat_check']
+        category = self.cleaned_data['category']
+        pd_status = self.cleaned_data['pd']
            
         if email and phone_number:
             user_profile.secondary_email = email
-            user_profile.phone_number = phone_number
+            user_profile.phone_number = phone_number            
         else:
             raise forms.ValidationError("Make sure that you have entered all the details.")            
-        if cat_check:    
-            user_profile.cat_status = True
-            
+        
+        user_application = user_profile.application
+        user_application.cgy = category
+        user_application.pd_status = pd_status
+        user_application.save()    
 
         user_profile.save()
