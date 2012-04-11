@@ -3,19 +3,9 @@
 
 {% block title %}Login{% endblock title %}
 {% block scripts %}
-<script>
-$(document).ready(function(){
-    if(($.browser.msie) && ($.browser.version <=8)){
-        window.location="/browser-version"
-    }
-    if(($.browser.mozilla) && (parseInt($.browser.version) <=5)){
-        window.location="/browser-version"
-    }
-    if(($.browser.webkit) && (parseInt($.browser.version <=530))){
-        window.location="/browser-version"
-    }
-});
-</script>
+<link href="{{ STATIC_URL }}css/style.css" rel="stylesheet">
+<script src="{{ STATIC_URL }}js/browser-check.js" type="text/javascript"></script>
+
 {% endblock scripts %}
 {% block content %}
 <h2> Welcome to the JAM 2012 Admission website</h2>
