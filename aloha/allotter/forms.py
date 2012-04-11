@@ -11,6 +11,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Fieldset, HTML, ButtonHolder, Div
 
 from string import digits, uppercase
+import settings
 
 BIRTH_YEAR_CHOICES = tuple(range(1960, 1994, 1))
 DD_YEAR_CHOICES = (2012,)
@@ -26,8 +27,8 @@ class UserLoginForm(forms.Form):
              help_text="As on your Examination Admit Card")
  
     ##Application number as password    
-    password = forms.CharField(label = "Application Number", 
-             max_length=10, help_text="As on your Examination Admit Card")
+    #password = forms.CharField(label = "Application Number", 
+    #         max_length=10, help_text="As on your Examination Admit Card")
     
     dob = forms.DateField(label="Date of Birth", 
             widget=SelectDateWidget(years=BIRTH_YEAR_CHOICES, attrs={"class":"span1"}),
@@ -64,22 +65,23 @@ class UserLoginForm(forms.Form):
         except User.DoesNotExist:
             raise forms.ValidationError("Entered Registration Number haven't appeared for JAM Exam.")
 
-    def clean_password(self):
-    
-        pwd = self.cleaned_data['password']
-        
+#    def clean_password(self):
+#    
+#        pwd = self.cleaned_data['password']
+#        
         ##Verifying the length of application number and whether it contains
         ##only digits.
 
-        if str(pwd).strip(digits) and len(pwd) != 5:
-            msg = "Not a valid Application Number"
-            raise forms.ValidationError(msg)    
-        
-        return pwd
+#        if str(pwd).strip(digits) and len(pwd) != 5:
+#            msg = "Not a valid Application Number"
+#            raise forms.ValidationError(msg)    
+#        
+#        return pwd
         
     def clean(self):
         super(UserLoginForm, self).clean()
-        u_name, pwd = self.cleaned_data.get('username'), self.cleaned_data.get('password')
+        u_name = self.cleaned_data.get('username')
+        pwd = settings.DEFAULT_PASSWORD
         dob = self.cleaned_data["dob"]
         dd_no = self.cleaned_data.get("dd_no")
         dd_date = self.cleaned_data.get("dd_date")

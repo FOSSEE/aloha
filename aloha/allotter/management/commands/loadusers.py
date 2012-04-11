@@ -3,6 +3,7 @@ from datetime import datetime
 from csv import DictReader
 from django.core.management.base import BaseCommand
 from allotter.models import Exam, Application, User, Profile
+from settings import DEFAULT_PASSWORD
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -38,9 +39,8 @@ def load_users(options):
 
     
     for data in userReader:
-        appno = data['AppNo.']
         regno = data['Reg.No.']
-        new_user = User.objects.create_user(regno, password=appno, email="")
+        new_user = User.objects.create_user(regno, password=DEFAULT_PASSWORD, email="")
         application = Application(user=new_user)
         application.np = int(data['NP'])
         if data['P1'].strip():
@@ -56,10 +56,9 @@ def load_users(options):
         application.nat = data['Nat']
         application.gender = data['Gdr']
         application.cent = data['Cent']
-        application.cgy = data['Cgy']
         application.save()
         dob = datetime.strptime(data['DOB'], "%d/%m/%y")
         new_profile = Profile(user=new_user, application=application)
         new_profile.dob = dob
         new_profile.save()
-        print "Added user with {0} and {1} with dob as {2}".format(appno,regno,dob)
+        print "Added user with {0} with dob as {1}".format(regno,dob)
