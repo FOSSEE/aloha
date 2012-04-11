@@ -301,6 +301,8 @@ def generate_pdf(request):
     elements.append(Paragraph(ptext, styles["Normal"]))
     elements.append(Spacer(4, 25))
     
+    elements.append(Spacer(4, 30))
+    
     ptext = '<font size=12>Signature of the Candidate</font>' 
     elements.append(Paragraph(ptext, styles["Normal"]))
     elements.append(Spacer(4, 20))
