@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    if(($.browser.msie) && ($.browser.version <7)){
+    if(($.browser.msie) && ($.browser.version <=6)){
         window.location="/browser-version"
     }
     if(($.browser.mozilla) && (parseInt($.browser.version) <3)){
