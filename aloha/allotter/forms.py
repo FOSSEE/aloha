@@ -66,7 +66,9 @@ class UserLoginForm(forms.Form):
 
     def clean_password(self):
     
-        pwd = self.cleaned_data['password']
+        pwd = self.cleaned_data['password']Candidates should choose the category they
+belong to, and send the relevant certificates along with their
+application"
         
         ##Verifying the length of application number and whether it contains
         ##only digits.
