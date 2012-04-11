@@ -61,10 +61,7 @@ def submit_details(request):
         Get the secondary email address, phone number and save it to the Profile.
     """
     user = request.user
-    category = user.get_profile().application.cgy #Getting the Category information
-    #Flag set based on OBC Check
-    if category == "B": cat_flag = True
-    else: cat_flag = False  
+    
     if request.method == "POST":
         form = UserDetailsForm(user, request.POST)
         if form.is_valid():
@@ -76,7 +73,7 @@ def submit_details(request):
                 
     else:
         form = UserDetailsForm(request.user)
-        context = {"form": form, "cat_flag": cat_flag}
+        context = {"form": form}
         return render(request, 'allotter/details.html', context)              
        
 def get_details(user, error_message = ""):
