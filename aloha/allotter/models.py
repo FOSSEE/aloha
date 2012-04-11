@@ -106,7 +106,9 @@ class Application(models.Model):
     pd_status = models.CharField(max_length=1, verbose_name="Physical Disability", 
                     help_text="Y for Yes, N for No", blank=True, default="N")
     
-    submitted = models.BooleanField(verbose_name="Submission Status", default=False)
+    submit_status = models.BooleanField(verbose_name="Submission Status", default=False)
+
+    quit_status  = models.BooleanField(verbose_name="Quit status", default=False) 
 
     def __unicode__(self):
         u = self.user
@@ -127,6 +129,12 @@ class Profile(models.Model):
         help_text=u"Phone number read from user after authentication")
         
     dd_no = models.CharField(max_length=15, verbose_name="Demand Draft Number", blank=True, null=True)
+    
+    tenth_perc = models.CharField(max_length=5, verbose_name="Tenth Percentage", blank=True, null=True)
+    
+    twelfth_perc = models.CharField(max_length=5, verbose_name="Twelfth Percentage", blank=True, null=True)
+    
+    bachelors_perc = models.CharField(max_length=5, verbose_name="Bachelors Percentage", blank=True, null=True)
         
     #Application for the Profile    
     application = models.ForeignKey(Application)
