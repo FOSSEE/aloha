@@ -137,7 +137,7 @@ class UserDetailsForm(forms.Form):
                 'phone_number',
                 'category',
                 HTML("""
-                <p>
+                <div class="alert alert-info">
                 The category you select is normally the one you have 
                 specified at the time of applying for the JAM 2012 examination. 
                 The category verification is only after submitting the relevant 
@@ -146,7 +146,7 @@ class UserDetailsForm(forms.Form):
                 category OBC-NCL (Minorities) should have specified OBC at the 
                 time of applying for the JAM 2012 and would now have to submit the 
                 additional relevant documents for this category.
-                </p>"""),
+                </div>"""),
                 'pd',
                 HTML("""
                 <p>Aggregate Marks(in %) including all subjects.</p>
@@ -199,10 +199,17 @@ class UserDetailsForm(forms.Form):
         phone_number = self.cleaned_data['phone_number']
         category = self.cleaned_data['category']
         pd_status = self.cleaned_data['pd']
+        tenth = self.cleaned_data['tenth_perc']
+        twelfth = self.cleaned_data['twelfth_perc']   
+        bachelor = self.cleaned_data['bachelor_perc']
+        
            
-        if email and phone_number:
+        if email and phone_number and tenth and twelfth and bachelor:
             user_profile.secondary_email = email
-            user_profile.phone_number = phone_number            
+            user_profile.phone_number = phone_number        
+            user_profile.tenth_perc = tenth
+            user_profile.twelfth_perc = twelfth
+            user_profile.bachelors_perc = bachelor
         else:
             raise forms.ValidationError("Make sure that you have entered all the details.")            
         
