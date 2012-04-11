@@ -8,14 +8,14 @@ from django.utils.encoding import *
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Submit, Layout, Fieldset, HTML, ButtonHolder, Div
 
 from string import digits, uppercase
 
 BIRTH_YEAR_CHOICES = tuple(range(1960, 1994, 1))
 DD_YEAR_CHOICES = (2012,)
-CATEGORY_CHOICES = [('GEN','General'), ('OBC-NCL', 'OBC-NCL'), ('OBC-NCL-M', 'OBC-NCL(Minorities)'), 
-                    ('SC', 'SC'), ('ST', 'ST')]
+CATEGORY_CHOICES = [('G','General'), ('B', 'OBC-NCL'), ('M', 'OBC-NCL (Minorities)'), 
+                    ('C', 'SC'), ('T', 'ST')]
 PD_CHOICES = [('Y', 'Yes'), ('N', 'No')]                                        
 
 
@@ -66,9 +66,7 @@ class UserLoginForm(forms.Form):
 
     def clean_password(self):
     
-        pwd = self.cleaned_data['password']Candidates should choose the category they
-belong to, and send the relevant certificates along with their
-application"
+        pwd = self.cleaned_data['password']
         
         ##Verifying the length of application number and whether it contains
         ##only digits.
@@ -132,7 +130,39 @@ class UserDetailsForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.form_class = 'form-horizontal'
         self.helper.form_action = "/allotter/details/"
-        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.layout = Layout(
+            Fieldset(
+                'Enter the following details',
+                'email',
+                'phone_number',
+                'category',
+                HTML("""
+                <p>
+                The category you select is normally the one you have 
+                specified at the time of applying for the JAM 2012 examination. 
+                The category verification is only after submitting the relevant 
+                documents and scrutiny by the JAM 2012 committee and the institute 
+                for which you are applying.  Candidates applying under the new 
+                category OBC-NCL (Minorities) should have specified OBC at the 
+                time of applying for the JAM 2012 and would now have to submit the 
+                additional relevant documents for this category.
+                </p>"""),
+                'pd',
+                HTML("""
+                <p>Aggregate Marks(in %) including all subjects.</p>
+                """),
+                'tenth_perc',
+                'twelfth_perc',
+                'bachelor_perc',
+                HTML("""
+                <p><br/> *Cannot be changed once submitted.</p>"""),
+                HTML("""
+                <p> **Pre-final year/semester if final result is awaited.</p>"""),
+            ),
+            ButtonHolder(
+                Submit('submit', 'Submit Details', css_class='button white')
+            )
+        )
         super(UserDetailsForm, self).__init__(*args, **kwargs)
 
     email = forms.EmailField(label="Email Address", widget=forms.TextInput(attrs={"placeholder":"john@example.com",}),
@@ -144,12 +174,17 @@ class UserDetailsForm(forms.Form):
     
     category = forms.ChoiceField(widget=forms.Select(attrs={'class':'selector'}), 
                 label="Category", choices=CATEGORY_CHOICES,
-                help_text="The category you select is normally the one you have specified at the time of applying for the JAM 2012 examination. The category verification is only after submitting the relevantdocuments and scrutiny by the JAM 2012 committee and the institute for which you are applying.  Candidates applying under the new category OBC-M should have specified OBC at the time of applying for the JAM 2012 and would now have to supply the additional relevant documents for this category.")
+                help_text="")
                 
-    pd = forms.ChoiceField(label="Physical Disability", widget=RadioSelect, choices=PD_CHOICES)            
+    pd = forms.ChoiceField(label="Physical Disability", widget=RadioSelect, choices=PD_CHOICES)        
     
+    tenth_perc = forms.CharField(label="Tenth Percentage", max_length=5, help_text="10th Standard")    
     
+    twelfth_perc = forms.CharField(label="Twelfth Percentage", 
+                    max_length=5, help_text="12th Standard (+2 of equivalent)")
 
+    bachelor_perc = forms.CharField(label="Bachelors Degree*", max_length=5, help_text="Bachelors Degree")    
+    
     def clean_phone_number(self):
         pno = self.cleaned_data['phone_number']
         if str(pno).strip(digits):
