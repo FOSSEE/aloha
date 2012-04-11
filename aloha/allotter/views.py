@@ -30,7 +30,7 @@ def user_login(request):
     """
     user = request.user
     if user.is_authenticated():
-        status = user.get_profile().application.submitted #Getting the submission status
+        status = user.get_profile().application.submit_status #Getting the submission status
         if status: #If already submitted, takes to Completion Page
             return redirect('/allotter/complete/')
         else: #Otherwise to Details Submission form 
@@ -41,7 +41,7 @@ def user_login(request):
         if form.is_valid():
             user = form.cleaned_data
             login(request, user)
-            status = user.get_profile().application.submitted #Getting the submission status          
+            status = user.get_profile().application.submit_status #Getting the submission status          
             if status:
                 return redirect('/allotter/complete/') #Redirect to Completion Page
             else:  
@@ -127,7 +127,16 @@ def apply(request):
 
 def user_logout(request):
     ##Logouts the user.
-    logout(request)
+    quit_status = request.POST['check']
+    user = request.user
+    user_profile = user.get_profile()
+    user_application = user_profile.application
+    if str(quit_status) == "on": 
+        user_application.quit_status = True
+    else:
+        user_application.quit_status = False      
+    user_application.save()    
+    logout(request)    
     return redirect ('/allotter/login/')
     
 ##http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-##order    
@@ -174,7 +183,7 @@ def submit_options(request):
             options_code_list.append(opt[1])
         
     user_application.options_selected = options_code_list #Saving the data in model   
-    user_application.submitted = True #Submission Status
+    user_application.submit_status = True #Submission Status
     user_application.save() 
     return redirect('/allotter/complete/')
 
@@ -188,9 +197,11 @@ def complete_allotment(request):
     sec_email = user.get_profile().secondary_email
     if not sec_email: #Not Entered Secondary email
         return redirect('/allotter/details/')
+    user_application = user.get_profile().application   
+    quit_status = user_application.quit_status
     options_chosen = get_chosen_options(user)
     context = {'username': reg_no, 'email': sec_email,  
-                'options_chosen': options_chosen}
+                'options_chosen': options_chosen, 'quit_status': quit_status}
     ##Sending mail with allotment details             
     admin = User.objects.get(pk=1)            
     from_email = admin.email
@@ -212,7 +223,7 @@ def complete_allotment(request):
             counter += 1
     admin_content +="#"
     admin_content += time.ctime()                      
-    mail_admins(subject, admin_content, fail_silently=True)                   
+    mail_admins(subject, admin_content, fail_silently=True)                  
     return render(request, 'allotter/complete.html', context)
     
     
