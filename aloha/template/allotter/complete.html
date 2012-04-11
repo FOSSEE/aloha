@@ -20,15 +20,15 @@ $(document).ready(function(){
 <h3>Please ensure that the choices listed below are those that you
 intend to submit finally and only then go ahead to the rest of the
 procedure.  If there is an error, please use the edit button to go back
-and re-do your choices</h3>
+and re-submit your choices.</h3>
 
 {% if options_chosen %}
 <table class="table table-bordered table-striped">
 <thead>
-<td><p>Prefrence</p></td>
+<td><p>Preference</p></td>
 <td><p>Programme Code </p></td>
 <td><p>Programme Name</p></td>
-<td><p>Insitute </p></td>
+<td><p>Institute </p></td>
 </thead>
 
 <tbody>
@@ -45,7 +45,7 @@ and re-do your choices</h3>
 
 {% if email %}
 
-An email with the list of options has been sent to {{ email }} for reference.
+An email with the selected list of options has been sent to {{ email }} for reference.
 
 {% endif %}
 
@@ -58,12 +58,16 @@ options otherwise click <b>Quit Allotment</b> to exit the allotment process </h4
 
 <br/>
 <br/>
+
+{% if not quit_status %}
 <p>You may edit your options by clicking <b>Edit Options</b>. <i>Please keep in mind that your previous options 
 will be deleted.</i></p>
 <form id="apply" action="/allotter/apply/" method="post">
 {% csrf_token %}
 <input type="submit" name="apply" value="Edit Options" class="btn" />
 </form>
+{% endif %}
+
 
 <p>Click on the button <b>Download Application PDF</b> to download 
 a PDF of the application form. <br/> <br/>
@@ -75,9 +79,9 @@ requirements and other details before sending in their application</p>
 
 
 <br/> <br/>
-<p>Click on the button <b>Generate Allotment PDF</b> to generate a Portable Document 
-Format(PDF) of your options. Take a print out of this PDF and send it with 
-your completed application form to the Organizing chairman </p>
+<p>Click on the button <b>Generate Allotment PDF</b> to generate a PDF
+file of your options. Take a print out of this PDF file and send it with 
+your completed application form to the "Organizing chairman, GATE-JAM 2012, IIT Bombay, Powai, Mumbai 400076" by speed-post (No private courier). </p>
 <form id ="get_pdf" action="/allotter/get_pdf/" method="post">
 {% csrf_token %}
 <input type="submit" name="get_pdf" value="Generate Allotment PDF" class="btn" />
@@ -92,7 +96,8 @@ your completed application form to the Organizing chairman </p>
 </p>
 <input type="submit" name="logout" value="Quit Admission Application" class="btn" id="checkButton" disabled="disabled" />
 <p>This will finish the application procedure and the choices
-you have given will be taken as final after that.</p>
+you have given will be taken as final after that. No change after this
+will be accepted.</p>
 
 </div>
 </form>
