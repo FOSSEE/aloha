@@ -17,9 +17,10 @@ $(document).ready(function(){
 
 {% block content %}
 
-<h2> The following options have been saved. Please verify them before logging out.</h2>
-
-<h3> Please keep in mind that, the next time you login you will be redirected to this page straightaway.</h3>
+<h3>Please ensure that the choices listed below are those that you
+intend to submit finally and only then go ahead to the rest of the
+procedure.  If there is an error, please use the edit button to go back
+and re-do your choices</h3>
 
 {% if options_chosen %}
 <table class="table table-bordered table-striped">
@@ -50,8 +51,8 @@ An email with the list of options has been sent to {{ email }} for reference.
 
 {% else %}
 
-<h3> No Options were chosen, click <b>Edit Options</b> to go back and select 
-options otherwise click <b>Quit Allotment</b> to exit the allotment process </h3>
+<p><h4> No Options were chosen, click <b>Edit Options</b> to go back and select 
+options otherwise click <b>Quit Allotment</b> to exit the allotment process </h4></p>
 
 {% endif %}
 
@@ -84,7 +85,10 @@ your completed application form to the Organizing chairman </p>
 
 <p><input type="checkbox" name="check" id="check"/><label for="check">I have downloaded 2 PDF's that together consitute my application.</label> 
 </p>
-<input type="submit" name="logout" value="Log out" class="btn" id="checkButton" disabled="disabled" />
+<input type="submit" name="logout" value="Quit Admission Application" class="btn" id="checkButton" disabled="disabled" />
+<p>This will finish the application procedure and the choices
+you have given will be taken as final after that.</p>
+
 </div>
 </form>
 
