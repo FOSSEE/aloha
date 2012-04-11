@@ -58,13 +58,14 @@ options otherwise click <b>Quit Allotment</b> to exit the allotment process </h4
 
 <br/>
 <br/>
+<hr />
 <p>You may edit your options by clicking <b>Edit Options</b>. <i>Please keep in mind that your previous options 
 will be deleted.</i></p>
 <form id="apply" action="/allotter/apply/" method="post">
 {% csrf_token %}
 <input type="submit" name="apply" value="Edit Options" class="btn" />
 </form>
-
+<hr />
 <p>Click on the button <b>Download Application PDF</b> to download 
 a PDF of the application form. <br/> <br/>
 Candidates are advised 
@@ -86,13 +87,13 @@ your completed application form to the Organizing chairman </p>
 <form id="logout" action="/allotter/logout/" method="post">
 {% csrf_token %}
 
-<div class="alert">
+<div class="alert alert-error">
 
 <p><input type="checkbox" name="check" id="check"/><label for="check">I have downloaded 2 PDF's that together consitute my application.</label> 
 </p>
 <input type="submit" name="logout" value="Quit Admission Application" class="btn" id="checkButton" disabled="disabled" />
-<p>This will finish the application procedure and the choices
-you have given will be taken as final after that.</p>
+<p><b>This will finish the application procedure and the choices
+you have given will be taken as final after that.</b></p>
 
 </div>
 </form>
