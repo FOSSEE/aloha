@@ -14,7 +14,7 @@ from string import digits, uppercase
 
 BIRTH_YEAR_CHOICES = tuple(range(1960, 1994, 1))
 DD_YEAR_CHOICES = (2012,)
-CATEGORY_CHOICES = [('GEN','General'), ('OBC-NM', 'OBC-Non-Minority'), ('OBC-M', 'OBC-Minority'), 
+CATEGORY_CHOICES = [('GEN','General'), ('OBC-NCL', 'OBC-NCL'), ('OBC-NCL-M', 'OBC-NCL(Minorities)'), 
                     ('SC', 'SC'), ('ST', 'ST')]
 PD_CHOICES = [('Y', 'Yes'), ('N', 'No')]                                        
 
@@ -142,7 +142,7 @@ class UserDetailsForm(forms.Form):
     
     category = forms.ChoiceField(widget=forms.Select(attrs={'class':'selector'}), 
                 label="Category", choices=CATEGORY_CHOICES,
-                help_text="Category under which you would be considered for admission.")
+                help_text="The category you select is normally the one you have specified at the time of applying for the JAM 2012 examination. The category verification is only after submitting the relevantdocuments and scrutiny by the JAM 2012 committee and the institute for which you are applying.  Candidates applying under the new category OBC-M should have specified OBC at the time of applying for the JAM 2012 and would now have to supply the additional relevant documents for this category.")
                 
     pd = forms.ChoiceField(label="Physical Disability", widget=RadioSelect, choices=PD_CHOICES)            
     
