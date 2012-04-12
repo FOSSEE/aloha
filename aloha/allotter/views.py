@@ -214,28 +214,32 @@ def complete_allotment(request):
     options_chosen = get_chosen_options(user)
     context = {'username': reg_no, 'email': sec_email,  
                 'options_chosen': options_chosen, 'quit_status': quit_status}
-    ##Sending mail with allotment details             
-    admin = User.objects.get(pk=1)            
-    from_email = admin.email
-    subject = "JAM 2012 admissions"
-    content = "The following options were chosen by you \n \n"
-    if options_chosen:
+    ##Sending mail with allotment details
+    
+    if not quit_status:             
+        admin = User.objects.get(pk=1) #getting admin user            
+        from_email = admin.email
+        subject = "JAM 2012 admissions"
+        content = "The following options were chosen by you \n \n"
+        if options_chosen:
+            counter = 1
+            for option in options_chosen:
+                content += "Preference Number: %s, Option Code: %s, Option Name: %s, Location: %s \n"  % (counter, option.opt_code, option.opt_name, option.opt_location)
+                counter += 1 
+                            
+        content += "\n \n \nPlease do not delete this email and keep it for reference purposes.  \
+                    \n \n \n \n Regards,        \n             JAM Office, IIT Bombay"
+        send_mail(subject, content, from_email, [sec_email], fail_silently=True)
+        admin_content = content
+        admin_content +="\n\n\n#%s:" % (reg_no)
         counter = 1
         for option in options_chosen:
-            content += "Preference Number: %s, Option Code: %s, Option Name: %s, Location: %s \n"  %(counter, option.opt_code, option.opt_name, option.opt_location)
-            counter += 1 
-                            
-    content += "\n \n \nPlease do not delete this email and keep it for reference purposes. \n \n \n \n Regards, \n JAM Office, IIT Bombay"
-    send_mail(subject, content, from_email, [sec_email], fail_silently=True)
-    admin_content = content
-    admin_content +="\n\n\n#%s:" % (reg_no)
-    counter = 1
-    for option in options_chosen:
             admin_content += "%s,%s:"  %(counter, option.opt_code) 
             counter += 1
-    admin_content +="#"
-    admin_content += time.ctime()                      
-    mail_admins(subject, admin_content, fail_silently=True)                  
+        admin_content +="#"
+        admin_content += time.ctime()                      
+        mail_admins(subject, admin_content, fail_silently=True)                  
+    
     return render(request, 'allotter/complete.html', context)
     
     

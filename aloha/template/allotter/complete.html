@@ -45,7 +45,12 @@ and re-submit your choices.</h3>
 
 {% if email %}
 
+{% if not quit_status %}
+
 An email with the selected list of options has been sent to {{ email }} for reference.
+
+{% endif %}
+
 
 {% endif %}
 
