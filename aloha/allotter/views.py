@@ -172,8 +172,13 @@ def submit_options(request):
     options_chosen_list = [] #Initializing empty list for storing options
  
     for option in options_available_list:   
-        option_pref = request.POST[unicode(option.opt_code)]           
-        options_chosen_list.append([int(option_pref), str(option.opt_code)]) #[preference, option code]
+        option_pref = request.POST[unicode(option.opt_code)]        
+        try:   
+            options_chosen_list.append([int(option_pref), str(option.opt_code)]) #[preference, option code]
+        except ValueError:
+            context = get_details(user)
+            return render(request, 'allotter/apply.html', context)
+            
     
       
     options_chosen_list.sort() #Sorting by preference
