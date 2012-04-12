@@ -106,11 +106,11 @@ class UserLoginForm(forms.Form):
       
         ##Authentication part
         user = authenticate(username = u_name, password = pwd)
+        if not user:
+            raise forms.ValidationError("Registration Number doesn't match.")
         user_profile = user.get_profile()
         user_profile.dd_no = dd_no
         user_profile.save()
-        if not user:
-            raise forms.ValidationError("Application Number or Registration Number doesn't match.")
         return user
         
     def __init__(self, *args, **kwargs):

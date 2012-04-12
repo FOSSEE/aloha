@@ -61,7 +61,12 @@ def submit_details(request):
         Get the secondary email address, phone number and save it to the Profile.
     """
     user = request.user
-    
+    #Checking whether user had done the allottment previously.
+    user_profile = user.get_profile()
+    user_application = user_profile.application
+    if user_application.quit_status:
+        return redirect('/allotter/complete/')
+         
     if request.method == "POST":
         form = UserDetailsForm(user, request.POST)
         if form.is_valid():
@@ -121,6 +126,11 @@ def apply(request):
     if not sec_email: #Not Entered Secondary email
         return redirect('/allotter/details/')
         
+    user_profile = user.get_profile()
+    user_application = user_profile.application
+    if user_application.quit_status:
+        return redirect('/allotter/complete/')    
+        
     context = get_details(user)       
     return render(request, 'allotter/apply.html', context)                         
 
@@ -141,12 +151,6 @@ def user_logout(request):
     user_application.save()    
     logout(request)    
     return render(request, 'allotter/logout.html')
-    
-##http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-##order    
-def rem_dup(seq):
-    seen = set()
-    seen_add = seen.add
-    return [ x for x in seq if x not in seen and not seen_add(x)]
     
 
 #TODO: Extensive Testing
