@@ -137,8 +137,11 @@ def apply(request):
 
 def user_logout(request):
     ##Logouts the user.
-    quit_status = request.POST['check']
-    user = request.user
+    try:
+        quit_status = request.POST['check']
+        user = request.user
+    except :
+        return redirect('/allotter/login/')
     user_profile = user.get_profile()
     user_application = user_profile.application
     if str(quit_status) == "on": 
@@ -147,7 +150,7 @@ def user_logout(request):
         user_application.quit_status = False      
     user_application.save()    
     logout(request)    
-    return redirect ('/allotter/login/')
+    return render(request, 'allotter/logout.html')
     
 
 #TODO: Extensive Testing
@@ -176,8 +179,13 @@ def submit_options(request):
     options_chosen_list = [] #Initializing empty list for storing options
  
     for option in options_available_list:   
-        option_pref = request.POST[unicode(option.opt_code)]           
-        options_chosen_list.append([int(option_pref), str(option.opt_code)]) #[preference, option code]
+        option_pref = request.POST[unicode(option.opt_code)]        
+        try:   
+            options_chosen_list.append([int(option_pref), str(option.opt_code)]) #[preference, option code]
+        except ValueError:
+            context = get_details(user)
+            return render(request, 'allotter/apply.html', context)
+            
     
       
     options_chosen_list.sort() #Sorting by preference
