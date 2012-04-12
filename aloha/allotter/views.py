@@ -127,8 +127,11 @@ def apply(request):
 
 def user_logout(request):
     ##Logouts the user.
-    quit_status = request.POST['check']
-    user = request.user
+    try:
+        quit_status = request.POST['check']
+        user = request.user
+    except :
+        return redirect('/allotter/login/')
     user_profile = user.get_profile()
     user_application = user_profile.application
     if str(quit_status) == "on": 
@@ -137,7 +140,7 @@ def user_logout(request):
         user_application.quit_status = False      
     user_application.save()    
     logout(request)    
-    return redirect ('/allotter/login/')
+    return render(request, 'allotter/logout.html')
     
 ##http://stackoverflow.com/questions/480214/how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-##order    
 def rem_dup(seq):
