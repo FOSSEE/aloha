@@ -82,9 +82,12 @@ class UserLoginForm(forms.Form):
         super(UserLoginForm, self).clean()
         u_name = self.cleaned_data.get('username')
         pwd = settings.DEFAULT_PASSWORD
-        dob = self.cleaned_data["dob"]
+        try:
+            dob = self.cleaned_data['dob']
+            dd_date = self.cleaned_data.get("dd_date")
+        except:
+            raise forms.ValidationError("One or more of the entered dates is/are invalid.")  
         dd_no = self.cleaned_data.get("dd_no")
-        dd_date = self.cleaned_data.get("dd_date")
         dd_amount = self.cleaned_data.get("dd_amount")
         try:
             current_user = User.objects.get(username__exact = u_name)
