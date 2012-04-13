@@ -99,7 +99,7 @@ class UserLoginForm(forms.Form):
 
         ##Validating the DD Details
         
-        if not dd_no and not dd_amount:
+        if not dd_no or not dd_amount:
             raise forms.ValidationError("Fill in the Demand Draft Details") 
         elif len(dd_no) != 6 or dd_no.count('0') == 6 or dd_no.strip(digits):
             raise forms.ValidationError("Demand Draft Number you have entered is not valid.")       
