@@ -14,7 +14,7 @@ class Command(BaseCommand):
 def dump_csv():
     application = Application.objects.all()    
     csvWriter = writer(open('csvdump.csv', 'w'), delimiter=":")
-    csvWriter.writerow(['RegNo.','np','option_selected'])
+    csvWriter.writerow(['RegNo.','np','cat', 'option_selected'])
     for users in application:
-        csvWriter.writerow([users.user, users.np, users.options_selected])
+        csvWriter.writerow([users.user, users.np,users.cgy, users.options_selected])
 
