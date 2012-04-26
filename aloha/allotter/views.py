@@ -140,10 +140,10 @@ def user_logout(request):
     try:
         quit_status = request.POST['check']
         user = request.user
+        user_profile = user.get_profile()
+        user_application = user_profile.application    
     except :
         return redirect('/allotter/login/')
-    user_profile = user.get_profile()
-    user_application = user_profile.application
     if str(quit_status) == "on": 
         user_application.quit_status = True
     else:

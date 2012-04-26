@@ -82,9 +82,12 @@ class UserLoginForm(forms.Form):
         super(UserLoginForm, self).clean()
         u_name = self.cleaned_data.get('username')
         pwd = settings.DEFAULT_PASSWORD
-        dob = self.cleaned_data["dob"]
+        try:
+            dob = self.cleaned_data['dob']
+            dd_date = self.cleaned_data.get("dd_date")
+        except:
+            raise forms.ValidationError("One or more of the entered dates is/are invalid.")  
         dd_no = self.cleaned_data.get("dd_no")
-        dd_date = self.cleaned_data.get("dd_date")
         dd_amount = self.cleaned_data.get("dd_amount")
         try:
             current_user = User.objects.get(username__exact = u_name)
@@ -96,7 +99,7 @@ class UserLoginForm(forms.Form):
 
         ##Validating the DD Details
         
-        if not dd_no and not dd_amount:
+        if not dd_no or not dd_amount:
             raise forms.ValidationError("Fill in the Demand Draft Details") 
         elif len(dd_no) != 6 or dd_no.count('0') == 6 or dd_no.strip(digits):
             raise forms.ValidationError("Demand Draft Number you have entered is not valid.")       
@@ -204,16 +207,16 @@ class UserDetailsForm(forms.Form):
         tenth = self.cleaned_data['tenth_perc']
         twelfth = self.cleaned_data['twelfth_perc']   
         bachelor = self.cleaned_data['bachelor_perc']
-        
            
         if email and phone_number and tenth and twelfth and bachelor:
             user_profile.secondary_email = email
-            user_profile.phone_number = phone_number        
+            user_profile.phone_number = phone_number
             user_profile.tenth_perc = tenth
             user_profile.twelfth_perc = twelfth
-            user_profile.bachelors_perc = bachelor
+            user_profile.bachelors_perc = bachelor        
         else:
             raise forms.ValidationError("Make sure that you have entered all the details.")            
+           
         
         user_application = user_profile.application
         user_application.cgy = category
